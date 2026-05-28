@@ -83,6 +83,18 @@ local function get_privs(player)
     return privs
 end
 
+local function get_player_yaw(player)
+    if player and player.get_look_horizontal then
+        return player:get_look_horizontal()
+    end
+
+    if player and player.get_look_yaw then
+        return player:get_look_yaw()
+    end
+
+    return nil
+end
+
 local function role_to_fs_elem(role, caller_has_server_privs)
     local map = {
         [mc_teacher.ROLES.STUDENT] = {[true] = "p_role_student", [false] = "blocked_role_student"},
@@ -2646,14 +2658,3 @@ textarea[8.85,2.5;7.2,1;;;Online/Banned/Mods]
 textlist[8.9,2.9;7.1,6;server_dynamic;;1;false]
 button[8.9,9;7.1,0.8;;Unban]
 ]]
-local function get_player_yaw(player)
-    if player and player.get_look_horizontal then
-        return player:get_look_horizontal()
-    end
-
-    if player and player.get_look_yaw then
-        return player:get_look_yaw()
-    end
-
-    return nil
-end

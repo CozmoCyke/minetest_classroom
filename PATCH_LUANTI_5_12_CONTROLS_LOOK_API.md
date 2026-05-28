@@ -18,6 +18,10 @@ This patch applies the minimal Luanti 5.12 compatibility fix needed for the rema
   - prefers `player:get_look_horizontal()` when available
   - falls back to `player:get_look_yaw()` on older engines
 
+## Scope fix
+
+- The helper is defined before `mc_teacher.show_controller_fs()` now, so the call site can see it without relying on later local-function scope.
+
 This keeps the code compatible with Luanti 5.12+ while not breaking older Minetest-era behavior.
 
 ## Controls and help text review
