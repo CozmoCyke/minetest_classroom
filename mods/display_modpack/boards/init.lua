@@ -68,6 +68,7 @@ models = {
 				"default_wood.png", "default_wood.png",
 				"default_wood.png", "board_black_front.png" },
 			drawtype = "nodebox",
+			use_texture_alpha = "clip",
 			node_box = {
 				type = "fixed",
 				fixed = {
@@ -98,6 +99,7 @@ models = {
 				"default_wood.png", "default_wood.png",
 				"default_wood.png", "board_green_front.png" },
 			drawtype = "nodebox",
+			use_texture_alpha = "clip",
 			node_box = {
 				type = "fixed",
 				fixed = {

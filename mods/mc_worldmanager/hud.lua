@@ -11,7 +11,7 @@ end
 function mc_worldManager.UpdateRealmHud(player)
     if (not mc_worldManager.hud:exists(player, "worldManager:currentRealm")) then
         mc_worldManager.hud:add(player, "worldManager:currentRealm", {
-            hud_elem_type = "text",
+            type = "text",
             position = { x = 0, y = 1 },
             offset = { x = 5, y = -5 },
             alignment = { x = "right", y = "up" },
@@ -21,7 +21,7 @@ function mc_worldManager.UpdateRealmHud(player)
     end
 
     mc_worldManager.hud:change(player, "worldManager:currentRealm", {
-        hud_elem_type = "text",
+        type = "text",
         position = { x = 0, y = 1 },
         offset = { x = 5, y = -5 },
         alignment = { x = "right", y = "up" },
@@ -78,7 +78,7 @@ mc_worldManager.positionTextFunctions = positionText
 function mc_worldManager.UpdatePositionHud(player, positionMode)
     if (not mc_worldManager.hud:exists(player, "worldManager:position")) then
         mc_worldManager.hud:add(player, "worldManager:position", {
-            hud_elem_type = "text",
+            type = "text",
             position = { x = 0, y = 1 },
             offset = { x = 5, y = -25 },
             alignment = { x = "right", y = "up" },
@@ -89,7 +89,7 @@ function mc_worldManager.UpdatePositionHud(player, positionMode)
 
     if (not mc_worldManager.hud:exists(player, "worldManager:elevation")) then
         mc_worldManager.hud:add(player, "worldManager:elevation", {
-            hud_elem_type = "text",
+            type = "text",
             position = { x = 0, y = 1 },
             offset = { x = 5, y = -45 },
             alignment = { x = "right", y = "up" },
@@ -103,7 +103,7 @@ function mc_worldManager.UpdatePositionHud(player, positionMode)
         local seaLevel = realm:get_data("seaLevel")
 
         mc_worldManager.hud:change(player, "worldManager:position", {
-            hud_elem_type = "text",
+            type = "text",
             position = { x = 0, y = 1 },
             offset = { x = 5, y = -25 },
             alignment = { x = "right", y = "up" },
@@ -116,7 +116,7 @@ function mc_worldManager.UpdatePositionHud(player, positionMode)
         end
 
         mc_worldManager.hud:change(player, "worldManager:elevation", {
-            hud_elem_type = "text",
+            type = "text",
             position = { x = 0, y = 1 },
             offset = { x = 5, y = -45 },
             alignment = { x = "right", y = "up" },

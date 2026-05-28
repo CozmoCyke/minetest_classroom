@@ -49,7 +49,7 @@ end
 local function show_marker(from_pname, to_pname, message, pos)
     if not mc_core.hud:get(to_pname, from_pname.."_marker") then 
         mc_core.hud:add(to_pname, from_pname.."_marker", {
-            hud_elem_type = "waypoint",
+            type = "waypoint",
             world_pos = pos,
             precision = 1,
             number = mc_core.hex_string_to_num(mc_core.col.marker),
@@ -59,6 +59,7 @@ local function show_marker(from_pname, to_pname, message, pos)
         })
     else
         mc_core.hud:change(to_pname, from_pname.."_marker", {
+            type = "waypoint",
             world_pos = pos,
             text = message,
         })

@@ -22,21 +22,24 @@ local function get_playername(player)
 	end
 end
 
-local function convert_def(def, type)
+local function convert_def(def, hud_type)
 	def = table.copy(def)
-	if type == "text" then
+	hud_type = hud_type or def.type or def.hud_elem_type
+	def.type = hud_type
+	def.hud_elem_type = nil
+	if hud_type == "text" then
 		def.number = def.number or      def.color
 		def.color = nil
 
 		def.size   = def.size   or (def.text_scale and {x = def.text_scale})
 		def.text_scale = nil
-	elseif type == "image" then
+	elseif hud_type == "image" then
 		def.text  = def.text  or  def.texture
 		def.texture = nil
 
 		def.scale = def.scale or (def.image_scale and {x = def.image_scale, y = def.image_scale})
 		def.image_scale = nil
-	elseif type == "statbar" then
+	elseif hud_type == "statbar" then
 		if def.textures then
 			def.text  = def.textures[1]
 			def.text2 = def.textures[2]
@@ -57,7 +60,7 @@ local function convert_def(def, type)
 
 		def.size = def.size or def.force_image_size
 		def.force_image_size = nil
-	elseif type == "inventory" then
+	elseif hud_type == "inventory" then
 		def.text   = def.text   or def.listname
 		def.listname = nil
 
@@ -66,7 +69,7 @@ local function convert_def(def, type)
 
 		def.item   = def.item   or def.selected
 		def.selected = nil
-	elseif type == "waypoint" then
+	elseif hud_type == "waypoint" then
 		def.name   = def.name   or def.waypoint_text
 		def.waypoint_text = nil
 
@@ -75,7 +78,7 @@ local function convert_def(def, type)
 
 		def.number = def.number or def.color
 		def.color = nil
-	elseif type == "image_waypoint" then
+	elseif hud_type == "image_waypoint" then
 		def.text  = def.text  or      def.texture
 		def.texture = nil
 
@@ -128,7 +131,7 @@ function hud.add(self, player, name, def)
 		self.huds[pname] = {}
 	end
 
-	def = convert_def(def, def.hud_elem_type)
+	def = convert_def(def, def.type or def.hud_elem_type)
 
 	local id = pobj:hud_add(def)
 
@@ -159,7 +162,7 @@ function hud.change(self, player, name, def)
 	local pname = get_playername(player)
 	assert(self.huds[pname] and self.huds[pname][name], "Attempt to change hud that doesn't exist!")
 
-	def = convert_def(def, def.hud_elem_type or self.huds[pname][name].def.hud_elem_type)
+	def = convert_def(def, def.type or def.hud_elem_type or self.huds[pname][name].def.type or self.huds[pname][name].def.hud_elem_type)
 
 	for stat, val in pairs(def) do
 		pobj:hud_change(self.huds[pname][name].id, stat, val)

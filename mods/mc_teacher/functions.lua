@@ -30,7 +30,7 @@ function mc_teacher.display_restart_time(time)
         if player:is_player() then
             if not mc_core.hud:get(player, "restart_timer") then
                 mc_core.hud:add(player, "restart_timer", {
-                    hud_elem_type = "text",
+                    type = "text",
                     text = "Server restarting in "..time..extension,
                     scale = {x = 100, y = 100},
                     position = {x = 0.5, y = 0.918},
@@ -40,6 +40,7 @@ function mc_teacher.display_restart_time(time)
                 })
             else
                 mc_core.hud:change(player, "restart_timer", {
+                    type = "text",
                     text = "Server restarting in "..time..extension
                 })
             end
