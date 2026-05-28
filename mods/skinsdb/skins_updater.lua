@@ -12,11 +12,10 @@ if not core.features.httpfetch_binary_data then
 		"Feature 'httpfetch_binary_data' is missing. Update Minetest."
 end
 
--- Insecure environment for saving textures and meta
-local ie, http = skins.ie, skins.http
-if not ie or not http then
-	internal.errors[#internal.errors + 1] = "Insecure environment is required. " ..
-		"Please add skinsdb to `secure.trusted_mods` in minetest.conf"
+local http = skins.http
+if not http then
+	internal.errors[#internal.errors + 1] = "HTTP API is required. " ..
+		"Please add skinsdb to `secure.http_mods` in minetest.conf"
 end
 
 minetest.register_chatcommand("skinsdb_download_skins", {
@@ -51,9 +50,16 @@ local root_url = "http://minetest.fensta.bplaced.net"
 local page_url = root_url .. "/api/v2/get.json.php?getlist&page=%i&outformat=base64" -- [1] = Page#
 local preview_url = root_url .. "/skins/1/%i.png" -- [1] = ID
 
-local mod_path = skins.modpath
-local meta_path = mod_path .. "/meta/"
-local skins_path = mod_path .. "/textures/"
+local meta_path = skins.meta_path .. "/"
+local skins_path = skins.textures_path .. "/"
+
+if core.mkdir then
+	core.mkdir(meta_path)
+	core.mkdir(skins_path)
+else
+	minetest.mkdir(meta_path)
+	minetest.mkdir(skins_path)
+end
 
 -- Fancy debug wrapper to download an URL
 local function fetch_url(url, callback)
@@ -73,11 +79,18 @@ local function fetch_url(url, callback)
 	end)
 end
 
--- Insecure workaround since meta/ and textures/ cannot be written to
-local function unsafe_file_write(path, contents)
-	local f = ie.io.open(path, "wb")
+local function write_file(path, contents)
+	if core.safe_file_write then
+		return core.safe_file_write(path, contents)
+	end
+
+	local f = io.open(path, "wb")
+	if not f then
+		return false
+	end
 	f:write(contents)
 	f:close()
+	return true
 end
 
 -- Takes a valid skin table from the Skins Database and saves it
@@ -91,17 +104,17 @@ local function safe_single_skin(skin)
 	local name =  "character_" .. skin.id
 
 	-- core.safe_file_write does not work here
-	unsafe_file_write(
+	write_file(
 		meta_path .. name .. ".txt",
 		table.concat(meta, "\n")
 	)
 
-	unsafe_file_write(
+	write_file(
 		skins_path .. name .. ".png",
 		core.decode_base64(skin.img)
 	)
 	fetch_url(preview_url:format(skin.id), function(preview)
-		unsafe_file_write(skins_path .. name .. "_preview.png", preview)
+		write_file(skins_path .. name .. "_preview.png", preview)
 	end)
 	core.log("action", ("%s: Completed skin %s"):format(_ID_, name))
 end

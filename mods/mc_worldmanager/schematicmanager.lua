@@ -4,6 +4,51 @@ schematicManager = {}
 
 schematicManager.schematics = {}
 
+local function get_mod_data_root()
+    if core.get_mod_data_path then
+        local data_path = core.get_mod_data_path()
+        if data_path and data_path ~= "" then
+            return data_path
+        end
+    end
+    return minetest.get_worldpath() .. "/mod_data/" .. minetest.get_current_modname()
+end
+
+function schematicManager.getLegacySchematicRoot()
+    return minetest.get_modpath("mc_worldmanager") .. "/maps"
+end
+
+function schematicManager.getWritableSchematicRoot()
+    return get_mod_data_root() .. "/maps"
+end
+
+function schematicManager.registerSchematicDirectory(rootPath)
+    if not rootPath then
+        return 0
+    end
+
+    local count = 0
+    local files = minetest.get_dir_list(rootPath, false)
+    for _, fileName in pairs(files) do
+        local filePath = rootPath .. "/" .. fileName
+        local ext = string.sub(filePath, -5)
+        if ext == ".conf" then
+            local path = string.sub(filePath, 1, -6)
+            local key = string.sub(fileName, 1, -6)
+            schematicManager.registerSchematicPath(key, path)
+            count = count + 1
+        end
+    end
+    return count
+end
+
+function schematicManager.registerInstalledSchematics()
+    local count = 0
+    count = count + schematicManager.registerSchematicDirectory(schematicManager.getLegacySchematicRoot())
+    count = count + schematicManager.registerSchematicDirectory(schematicManager.getWritableSchematicRoot())
+    return count
+end
+
 ---@public
 ---Registers a schematic (and optional, but highly recommended, config file).
 ---Both should share the same file name (minus extension) under the same directory.
@@ -112,13 +157,4 @@ function schematicManager.getSchematic(key)
 end
 
 -- Scan the map folder and add them to the schematics list.
-local files = minetest.get_dir_list(minetest.get_modpath("mc_worldmanager") .. "/maps/", false)
-for k, fileName in pairs(files) do
-    local filePath = minetest.get_modpath("mc_worldmanager") .. "/maps/" .. fileName
-    local ext = string.sub(filePath, -5)
-    if (ext == ".conf") then
-        local path = string.sub(filePath, 1, -6)
-        local key = string.sub(fileName, 1, -6)
-        schematicManager.registerSchematicPath(key, path)
-    end
-end
+schematicManager.registerInstalledSchematics()

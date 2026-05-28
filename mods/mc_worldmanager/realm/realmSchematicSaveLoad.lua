@@ -13,9 +13,13 @@ function Realm:Save_Schematic(schematicName, author, mode)
     author = author or "unknown"
     mode = mode or "old"
 
-    local folderpath = minetest.get_modpath("mc_worldmanager") .. "/maps/"
+    local folderpath = schematicManager.getWritableSchematicRoot() .. "/"
 
-    minetest.mkdir(folderpath)
+    if core.mkdir then
+        core.mkdir(folderpath)
+    else
+        minetest.mkdir(folderpath)
+    end
 
     local fileName = schematicName
     local filepath = folderpath .. fileName

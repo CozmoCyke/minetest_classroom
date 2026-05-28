@@ -1,4 +1,41 @@
-local skins_dir_list = minetest.get_dir_list(skins.modpath.."/textures")
+local function get_texture_roots()
+	local roots = {}
+	if skins.textures_path and skins.textures_path ~= "" then
+		table.insert(roots, skins.textures_path)
+	end
+	table.insert(roots, skins.modpath .. "/textures")
+	return roots
+end
+
+local function get_meta_roots()
+	local roots = {}
+	if skins.meta_path and skins.meta_path ~= "" then
+		table.insert(roots, skins.meta_path)
+	end
+	table.insert(roots, skins.modpath .. "/meta")
+	return roots
+end
+
+local function open_from_roots(roots, filename, mode)
+	for _, root in ipairs(roots) do
+		local file = io.open(root .. "/" .. filename, mode or "r")
+		if file then
+			return file
+		end
+	end
+	return nil
+end
+
+local skins_dir_list = {}
+local seen_files = {}
+for _, root in ipairs(get_texture_roots()) do
+	for _, fn in ipairs(minetest.get_dir_list(root, false)) do
+		if not seen_files[fn] then
+			seen_files[fn] = true
+			table.insert(skins_dir_list, fn)
+		end
+	end
+end
 
 for _, fn in pairs(skins_dir_list) do
 	local name, sort_id, assignment, is_preview, playername
@@ -47,10 +84,12 @@ for _, fn in pairs(skins_dir_list) do
 				skin_obj:set_meta("assignment", "player:"..playername)
 				skin_obj:set_meta("playername", playername)
 			end
-			local file = io.open(skins.modpath.."/textures/"..fn, "r")
-			skin_obj:set_meta("format", skins.get_skin_format(file))
-			file:close()
-			file = io.open(skins.modpath.."/meta/"..name..".txt", "r")
+			local file = open_from_roots(get_texture_roots(), fn, "r")
+			if file then
+				skin_obj:set_meta("format", skins.get_skin_format(file))
+				file:close()
+			end
+			file = open_from_roots(get_meta_roots(), name..".txt", "r")
 			if file then
 				local data = string.split(file:read("*all"), "\n", 3)
 				file:close()

@@ -9,6 +9,20 @@ skins = {}
 skins.modpath = minetest.get_modpath(minetest.get_current_modname())
 skins.default = "character_ubc11"
 
+local function get_mod_data_root()
+	if core.get_mod_data_path then
+		local data_path = core.get_mod_data_path()
+		if data_path and data_path ~= "" then
+			return data_path
+		end
+	end
+	return minetest.get_worldpath() .. "/mod_data/" .. minetest.get_current_modname()
+end
+
+skins.data_path = get_mod_data_root()
+skins.meta_path = skins.data_path .. "/meta"
+skins.textures_path = skins.data_path .. "/textures"
+
 dofile(skins.modpath.."/skin_meta_api.lua")
 dofile(skins.modpath.."/api.lua")
 dofile(skins.modpath.."/skinlist.lua")
@@ -23,11 +37,8 @@ if minetest.get_modpath("sfinv") then
 	dofile(skins.modpath.."/sfinv_page.lua")
 end
 
--- ie.loadfile does not exist?
-skins.ie = minetest.request_insecure_environment()
 skins.http = minetest.request_http_api()
 dofile(skins.modpath.."/skins_updater.lua")
-skins.ie = nil
 skins.http = nil
 
 -- 3d_armor compatibility

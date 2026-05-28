@@ -482,18 +482,7 @@ commands["schematic"] = {
             local newRealm = Realm:NewFromSchematic(realmName, key)
             return true, "creat[ing][ed] new classroom with name: " .. newRealm.Name .. "and ID: " .. newRealm.ID .. " from schematic with key " .. key
         elseif (params[1] == "register") then
-            local files = minetest.get_dir_list(minetest.get_modpath("mc_worldmanager") .. "/maps/", false)
-            local count = 0
-            for k, fileName in pairs(files) do
-                local filePath = minetest.get_modpath("mc_worldmanager") .. "/maps/" .. fileName
-                local ext = string.sub(filePath, -5)
-                if (ext == ".conf") then
-                    local path = string.sub(filePath, 1, -6)
-                    local key = string.sub(fileName, 1, -6)
-                    schematicManager.registerSchematicPath(key, path)
-                    count = count + 1
-                end
-            end
+            local count = schematicManager.registerInstalledSchematics()
             return true, "Registered "..count.." schematics"
         else
             return false, "unknown subcommand. Try classroom schematic list | classroom schematic save | classroom schematic load | classroom schematic register"

@@ -1,5 +1,17 @@
 json_importer = { path = minetest.get_modpath(minetest.get_current_modname()) }
 
+local function get_mod_data_root()
+    if core.get_mod_data_path then
+        local data_path = core.get_mod_data_path()
+        if data_path and data_path ~= "" then
+            return data_path
+        end
+    end
+    return minetest.get_worldpath() .. "/mod_data/" .. minetest.get_current_modname()
+end
+
+json_importer.data_path = get_mod_data_root() .. "/data"
+
 local conf = Settings(json_importer.path .. "/settings.conf")
 
 if (conf:get_bool("remove_other_biomes", false)) then

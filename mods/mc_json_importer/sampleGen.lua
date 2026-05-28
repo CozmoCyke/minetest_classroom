@@ -74,10 +74,14 @@ sampleTables["recipe"] = {
 }
 
 for k, sampleTable in pairs(sampleTables) do
-    local dataPath = json_importer.path .. "\\data\\" .. sampleTable._jsonType .. "s\\"
-    minetest.mkdir(dataPath)
+    local dataPath = json_importer.data_path .. "/" .. sampleTable._jsonType .. "s/"
+    if core.mkdir then
+        core.mkdir(dataPath)
+    else
+        minetest.mkdir(dataPath)
+    end
 
-    -- Write our sample json files to the mod's folder
+    -- Write our sample json files to the writable runtime data folder
     local jsonText = minetest.write_json(sampleTable, true)
     local f = io.open(dataPath .. k .. ".json", "wb")
     local content = f:write(jsonText)
