@@ -174,6 +174,11 @@ end
 
 -- Function to fetch node data from Overpass API based on key=value and bounding box
 function openstreetmap.fetch_kv_overpass_nodes_callback(key, value, minlat, minlon, maxlat, maxlon, callback)
+    if not openstreetmap.http then
+        minetest.log("warning", "[openstreetmap] HTTP API unavailable. Add openstreetmap to secure.http_mods to enable Overpass requests.")
+        return
+    end
+
     local query = string.format([[
         [out:json];
         node["%s"="%s"](%s,%s,%s,%s);
@@ -189,6 +194,11 @@ end
 
 -- Function to fetch all node data from Overpass API with valid tags and bounding box
 function openstreetmap.fetch_all_overpass_nodes_callback(minlat, minlon, maxlat, maxlon, notags, callback)
+    if not openstreetmap.http then
+        minetest.log("warning", "[openstreetmap] HTTP API unavailable. Add openstreetmap to secure.http_mods to enable Overpass requests.")
+        return
+    end
+
     local query
     if notags then
         -- Return all nodes, regardles whether they have tags
@@ -215,6 +225,11 @@ end
 
 -- Function to fetch all node data from Overpass API with valid tags and bounding box
 function openstreetmap.fetch_all_overpass_ways_callback(minlat, minlon, maxlat, maxlon, notags, callback)
+    if not openstreetmap.http then
+        minetest.log("warning", "[openstreetmap] HTTP API unavailable. Add openstreetmap to secure.http_mods to enable Overpass requests.")
+        return
+    end
+
     local query
     if notags then
         -- Return all nodes, regardles whether they have tags

@@ -1,7 +1,19 @@
+local function ensure_http(name)
+    if openstreetmap.http then
+        return true
+    end
+    return false, "HTTP API unavailable. Add openstreetmap to secure.http_mods to use " .. name .. "."
+end
+
 minetest.register_chatcommand("fetch_kv_overpass_nodes", {
     params = "<key>=<value> <minlat> <minlon> <maxlat> <maxlon>",
     description = "Search Overpass API for nodes with a specific key=value within a bounding box and create a realm with their extent",
     func = function(name, params)
+        local ok, msg = ensure_http("fetch_kv_overpass_nodes")
+        if not ok then
+            return false, msg
+        end
+
         local key, value, minlat, minlon, maxlat, maxlon = params:match("^(%w+)=(%w+)%s+([%d.-]+)%s+([%d.-]+)%s+([%d.-]+)%s+([%d.-]+)$")
         
         if not key or not value or not minlat or not minlon or not maxlat or not maxlon then
@@ -18,6 +30,11 @@ minetest.register_chatcommand("fetch_all_overpass_nodes", {
     params = "<minlat> <minlon> <maxlat> <maxlon> <notags>",
     description = "Search Overpass API for all nodes within a bounding box and create a realm from their extent, specify if you want to return nodes with no tags",
     func = function(name, params)
+        local ok, msg = ensure_http("fetch_all_overpass_nodes")
+        if not ok then
+            return false, msg
+        end
+
         local minlat, minlon, maxlat, maxlon, notags = params:match("^([%d.-]+)%s+([%d.-]+)%s+([%d.-]+)%s+([%d.-]+)%s+(%w+)$")
         
         if not minlat or not minlon or not maxlat or not maxlon then
@@ -35,6 +52,11 @@ minetest.register_chatcommand("fetch_all_overpass_ways", {
     params = "<minlat> <minlon> <maxlat> <maxlon> <notags> <notags>",
     description = "Search Overpass API for all ways within a bounding box, specify if you want to return ways with no tags",
     func = function(name, params)
+        local ok, msg = ensure_http("fetch_all_overpass_ways")
+        if not ok then
+            return false, msg
+        end
+
         local minlat, minlon, maxlat, maxlon, notags = params:match("^([%d.-]+)%s+([%d.-]+)%s+([%d.-]+)%s+([%d.-]+)%s+(%w+)$")
         
         if not minlat or not minlon or not maxlat or not maxlon then
@@ -170,6 +192,11 @@ minetest.register_chatcommand("search_overpass", {
     params = "<key>=<value> <minlat> <minlon> <maxlat> <maxlon>",
     description = "Search Overpass API for nodes with a specific key=value within a bounding box",
     func = function(name, params)
+        local ok, msg = ensure_http("search_overpass")
+        if not ok then
+            return false, msg
+        end
+
         local key, value, minlat, minlon, maxlat, maxlon = params:match("^(%w+)=(%w+)%s+([%d.-]+)%s+([%d.-]+)%s+([%d.-]+)%s+([%d.-]+)$")
         
         if not key or not value or not minlat or not minlon or not maxlat or not maxlon then

@@ -158,8 +158,7 @@ dofile(MOD_PATH .. "/entities.lua")
 -- Check if HTTP API is available
 openstreetmap.http = minetest.request_http_api()
 if not openstreetmap.http then
-    minetest.log("error", "Failed to access HTTP API")
-    return
+    minetest.log("warning", "[openstreetmap] HTTP API unavailable. Add openstreetmap to secure.http_mods to enable online import and search features.")
 end
 
 -- List of itemstrings for registered nodes

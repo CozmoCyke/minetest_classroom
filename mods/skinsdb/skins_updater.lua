@@ -14,7 +14,12 @@ end
 
 -- Insecure environment for saving textures and meta
 local ie, http = skins.ie, skins.http
-if not ie or not http then
+if not http then
+	internal.errors[#internal.errors + 1] =
+		"HTTP API is required for skin downloads. Add skinsdb to `secure.http_mods` in minetest.conf"
+end
+
+if not ie then
 	internal.errors[#internal.errors + 1] = "Insecure environment is required. " ..
 		"Please add skinsdb to `secure.trusted_mods` in minetest.conf"
 end
