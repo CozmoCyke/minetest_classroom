@@ -1627,7 +1627,7 @@ function mc_teacher.show_controller_fs(player, tab)
                     end
                 end
 
-                local yaw = player:get_look_yaw()
+                local yaw = get_player_yaw(player)
                 local rotate = 0
                 if yaw ~= nil then
                     -- Find rotation and texture based on yaw.
@@ -2646,3 +2646,14 @@ textarea[8.85,2.5;7.2,1;;;Online/Banned/Mods]
 textlist[8.9,2.9;7.1,6;server_dynamic;;1;false]
 button[8.9,9;7.1,0.8;;Unban]
 ]]
+local function get_player_yaw(player)
+    if player and player.get_look_horizontal then
+        return player:get_look_horizontal()
+    end
+
+    if player and player.get_look_yaw then
+        return player:get_look_yaw()
+    end
+
+    return nil
+end
